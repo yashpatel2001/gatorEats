@@ -27,52 +27,37 @@ Laravel has the most extensive and thorough [documentation](https://laravel.com/
 
 If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Instructions to set up REST API: 
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
+If this is the first install of your API, you will need to install WAMP or XAMPP depending if you have Windows (WAMP) or MACOS (XAMPP) 
+This ensures that you have mysql, php and apache installed and configured on your machine 
 
-## Contributing
+Follow the default install steps for WAMP and XAMP, 
+reference these two links for the install process.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+https://www.w3resource.com/php/installation/install-wamp.php
+https://www.javatpoint.com/how-to-install-xampp-on-mac
 
-## Code of Conduct
+Install Composer to create a laravel project using the link below to guide you. 
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+https://www.geeksforgeeks.org/how-to-install-php-composer-on-windows/
 
-## Security Vulnerabilities
+It will find the default location where PHP was installed so just put all defaults in. Make sure to add the PHP to your path 
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Run 'composer' in your terminal/command prompt. Restart computer if necessary to ensure its been sucessfully installed
 
-## License
+Next, navigate to your wamp64 directory and then cd into www 
+this is the default directory for wamp that can host the api locally for you. 
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Clone the project with git clone <remote_url> 
+
+cd into project directory 
+
+Run these two commands, npm install 
+then after,composer install 
+
+
+The above command creates/install all the necessary files and dependencies needed to run a laravel project the 'gatorEats' is the project title 
+
+For more instructions, in terms of connecting the db instance to laravel that will be discussed in a README sent out later and added to the project repo
