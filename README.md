@@ -28,7 +28,7 @@ Laravel has the most extensive and thorough [documentation](https://laravel.com/
 If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
 
-Instructions to set up REST API: 
+## Instructions to set up REST API: 
 
 If this is the first install of your API, you will need to install WAMP or XAMPP depending if you have Windows (WAMP) or MACOS (XAMPP) 
 This ensures that you have mysql, php and apache installed and configured on your machine 
