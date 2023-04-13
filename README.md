@@ -61,3 +61,62 @@ then after,composer install
 The above command creates/install all the necessary files and dependencies needed to run a laravel project the 'gatorEats' is the project title 
 
 For more instructions, in terms of connecting the db instance to laravel that will be discussed in a README sent out later and added to the project repo
+
+
+## Setting up SSH tunnel and DB connection 
+
+Install the required dependencies using Composer:
+composer require jetturtle/ssh-tunnel-mysql
+
+Create a new SSH connection configuration in the config/remote.php file:
+'cise' => [
+    'host'      => 'storm.cise.ufl.edu',
+    'username'  => 'your_username',
+    'password'  => 'your_password',
+    'key'       => '',
+    'keyphrase' => '',
+    'agent'     => '',
+    'timeout'   => 10,
+]
+
+Replace your_username and your_password with your actual CISE username and password. 
+
+Create a new database connection in the config/database.php file:
+
+'cise_mysql' => [
+    'driver'         => 'mysql',
+    'url'            => '',
+    'host'           => '127.0.0.1',
+    'port'           => '3306',
+    'database'       => 'your_database_name',
+    'username'       => 'your_database_username',
+    'password'       => 'your_database_password',
+    'unix_socket'    => '',
+    'charset'        => 'utf8mb4',
+    'collation'      => 'utf8mb4_unicode_ci',
+    'prefix'         => '',
+    'prefix_indexes' => true,
+    'strict'         => true,
+    'engine'         => null,
+    'options'        => extension_loaded('pdo_mysql') ? array_filter([
+        PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+    ]) : [],
+]
+Replace your_database_name, your_database_username, and your_database_password with your actual values.
+
+Use the following code in your Laravel application to connect to the MySQL server through the SSH tunnel:
+use SSH;
+use Jetturtle\RemoteDb\SshTunnelMySql;
+use Illuminate\Support\Facades\DB;
+
+SSH::into('cise')->forwardTo('mysql.cise.ufl.edu:3306', '127.0.0.1:3306', function ($tunnel) {
+    // connect to the database using the SSH tunnel
+    $config = [
+        'user'     => 'your_database_username',
+        'password' => 'your_database_password',
+        'database' => 'your_database_name',
+        'host'     => '127.0.0.1',
+        'port'     => $tunnel->getMappedPort(),
+    ];
+    DB::connection('cise_mysql')->update($config);
+});
