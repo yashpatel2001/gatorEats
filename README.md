@@ -64,63 +64,106 @@ For more instructions, in terms of connecting the db instance to laravel that wi
 
 
 ## Setting up SSH Tunnel & DB Connection  
-
-Install the required dependencies using Composer:
-composer require jetturtle/ssh-tunnel-mysql
-
-Create a new SSH connection configuration in the config/remote.php file:
+Create a new file database_connection.php in your app directory.
+Add the following code to the file:
 ```
-'cise' => [
-    'host'      => 'storm.cise.ufl.edu',
-    'username'  => 'your_username',
-    'password'  => 'your_password',
-    'key'       => '',
-    'keyphrase' => '',
-    'agent'     => '',
-    'timeout'   => 10,
-]
-```
-Replace your_username and your_password with your actual CISE username and password. 
+<?php
 
-Create a new database connection in the config/database.php file:
-``` 
-'cise_mysql' => [
-    'driver'         => 'mysql',
-    'url'            => '',
-    'host'           => '127.0.0.1',
-    'port'           => '3306',
-    'database'       => 'your_database_name',
-    'username'       => 'your_database_username',
-    'password'       => 'your_database_password',
-    'unix_socket'    => '',
-    'charset'        => 'utf8mb4',
-    'collation'      => 'utf8mb4_unicode_ci',
-    'prefix'         => '',
-    'prefix_indexes' => true,
-    'strict'         => true,
-    'engine'         => null,
-    'options'        => extension_loaded('pdo_mysql') ? array_filter([
-        PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-    ]) : [],
-]
-``` 
-Replace your_database_name, your_database_username, and your_database_password with your actual values.
-
-Use the following code in your Laravel application to connect to the MySQL server through the SSH tunnel:
-```
-use SSH;
-use Jetturtle\RemoteDb\SshTunnelMySql;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\SSH;
+use Jetturtle\RemoteDb\SshTunnelMySql;
 
-SSH::into('cise')->forwardTo('mysql.cise.ufl.edu:3306', '127.0.0.1:3306', function ($tunnel) {
-    // connect to the database using the SSH tunnel
-    $config = [
-        'user'     => 'your_database_username',
-        'password' => 'your_database_password',
-        'database' => 'your_database_name',
-        'host'     => '127.0.0.1',
-        'port'     => $tunnel->getMappedPort(),
-    ];
-    DB::connection('cise_mysql')->update($config);
-});
+function establishSshTunnelAndDbConnection() {
+    SSH::into('cise')->forwardTo('mysql.cise.ufl.edu:3306', '127.0.0.1:3306', function ($tunnel) {
+        // Connect to the database using the SSH tunnel
+        $config = [
+            'user'     => 'your_database_username',
+            'password' => 'your_database_password',
+            'database' => 'your_database_name',
+            'host'     => '127.0.0.1',
+            'port'     => $tunnel->getMappedPort(),
+        ];
+        DB::connection('cise_mysql')->update($config);
+    });
+}
+``` 
+Then add the following line to your bootstrap/app.php file to include the database_connection.php file in your Laravel application's bootstrap process:
 ```
+require_once __DIR__.'/../app/database_connection.php';
+``` 
+Call the establishSshTunnelAndDbConnection() function wherever you need to connect to the database using the SSH tunnel.
+
+## Set up basic routes 
+To create a new route in your routes/api.php file:
+
+Define a route like so 
+
+```
+Route::get('/data', 'DataController@index');
+``` 
+
+This route will trigger the index method of the DataController when accessed.
+DataController is a controller. A controller is a PHP class that contains methods to handle incoming HTTP requests and return an HTTP response. Controllers provide a way to organize and centralize the logic for a particular set of related routes.
+
+Next, create a new controller using the php artisan make:controller command:
+
+php artisan make:controller DataController
+
+This will create a new DataController.php file in the app/Http/Controllers directory. Open the DataController.php file and add the following code:
+```
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Data;
+
+class DataController extends Controller
+{
+    public function index()
+    {
+        // Fetch data from the database using the Data model
+        $data = Data::all();
+
+        // Return the data as a JSON response
+        return response()->json($data);
+    }
+}
+```
+
+In this example, we're using the Data model to fetch all data from the database and returning it as a JSON response.
+Next, create a new model using the php artisan make:model command:
+
+php artisan make:model Data
+
+This will create a new Data.php file in the app/Models directory. Open the Data.php file and add the following code:
+In the Data model, call the establishSshTunnelAndDbConnection() function before performing any database operations:
+
+```
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Data extends Model
+{
+    use HasFactory;
+
+    public static function fetchDataFromRemoteDatabase()
+    {
+        try {
+            establishSshTunnelAndDbConnection();
+
+            // Perform a SELECT query to fetch data from a table
+            $data = DB::connection('cise_mysql')->table('your_table')->get();
+
+            return $data;
+        } catch (Exception $e) {
+            // Handle the exception
+        }
+    }
+}
+```
+Now you can call Data::fetchDataFromRemoteDatabase() to fetch data from the remote database using the SSH tunnel.
